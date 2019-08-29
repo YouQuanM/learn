@@ -1,11 +1,16 @@
 <template>
   <div>
-    <span @click="flatten">flatten</span>
-    <span @click="reduce(reduceArr, reduceFun, 4)">reduce</span>
-    <span @click="map(mapArr, mapFun)">map</span>
-    <span @click="numAddComma(num)">numAddComma</span>
-    <span @click="findLongestString(longString)">findLongestString</span>
-    <span @click="mathOverAdd(a, b)">mathOverAdd</span>
+    <p @click="flatten">flatten</p>
+    <p @click="reduce(reduceArr, reduceFun, 4)">reduce</p>
+    <p @click="map(mapArr, mapFun)">map</p>
+    <p @click="numAddComma(num)">numAddComma</p>
+    <p @click="findLongestString(longString)">findLongestString</p>
+    <p @click="mathOverAdd(a, b)">mathOverAdd</p>
+    <p @click="maxChar(val)">maxChar</p>
+    <p @click="findNOfString(200)">findNOfString</p>
+    <p @click="parseQueryString('http://liangzhicompany.com/home?yh=1&lyl=2&maj=3')">parseQueryString</p>
+    <p @click="plindrome('asdffdsa')">plindrome</p>
+    <p @click="titleCase('yIn hanG bAI XUE')">titleCase</p>
   </div>
 </template>
 
@@ -19,8 +24,9 @@ export default {
       mapArr: [2, 4, 6],
       num: 1234567890,
       longString: 'safiowernsdldfnljie2109876543',
-      a: 12312323423452341,
-      b: 123876324
+      a: 12312323423452346,
+      b: 123876324,
+      val: 'aabbccfddddwesasdssssasdfaaaaaaaassssssaffdsfaas'
     }
   },
   methods: {
@@ -106,24 +112,81 @@ export default {
     mathOverAdd (a, b) {
       a = a.toString()
       b = b.toString()
+      a = a.split('')
+      b = b.split('')
       let n1 = a.length
       let n2 = b.length
       for (let i = 0; i < Math.max(n1, n2) - Math.min(n1, n2); i++) {
-        if (a < b) a = '0' + a
-        if (b < a) b = '0' + b
+        if (n1 < n2) a.unshift('0')
+        if (n2 < n1) b.unshift('0')
       }
-      a = a.split('').reverse()
-      b = b.split('').reverse()
+      a.reverse()
+      b.reverse()
       let c = Array(a.length).fill(0)
       a.forEach((v, i) => {
-        c[i] = c[i] + b[i] + v
-        if (c[i] > 10) {
+        c[i] = parseInt(c[i]) + parseInt(b[i]) + parseInt(v)
+        if (c[i] >= 10) {
           c[i + 1] = 1
           c[i] = c[i] - 10
         }
       })
-      console.log(c)
-      console.log(c.reverse().join('').toString())
+      console.log(c.reverse().join(''))
+    },
+    // 计算出字符串中出现次数最多的字符是什么，出现了多少次？
+    maxChar (val) {
+      function foo (str) {
+        let r = str.split('').filter((e, i, self) => {
+          return self.indexOf(e) === i
+        })
+        return r
+      }
+      let arr = foo(val)
+      let n = 0
+      let char = ''
+      arr.forEach(v => {
+        let m = val.split(v).length - 1
+        if (m > n) {
+          n = m
+          char = v
+        }
+      })
+      console.log(char, n)
+    },
+    // "123456789876543212345678987654321..."的第n位是什么
+    findNOfString (n) {
+      let k = '1234567898765432'
+      console.log(k.charAt(n % k.length - 1))
+    },
+    // 请编写一个 JavaScript 凼数 parseQueryString，它的用途是把 URL 参数解析为一个对象
+    parseQueryString (url) {
+      let queryStr = url.split('?')[1]
+      let queryArr = queryStr.split('&')
+      let obj = {}
+      queryArr.forEach(v => {
+        obj[v.split('=')[0]] = v.split('=')[1]
+      })
+      console.log(obj)
+    },
+    // 验证一个字符串是否为回文
+    plindrome (str) {
+      let str1 = str.replace(/[^A-Z|a-z|0-9]/g, '')
+      let arr1 = str1.split('').join('')
+      let arr2 = str1.split('').reverse().join('')
+      console.log(arr1)
+      console.log(arr2)
+      if (arr1 === arr2) {
+        console.log(true)
+      } else {
+        console.log(false)
+      }
+    },
+    // 确保字符串的每个单词首字母都大写，其余部分小写
+    titleCase (str) {
+      let arr = str.toLowerCase().split(' ')
+      arr.forEach((v, i) => {
+        arr[i] = v[0].toUpperCase() + v.slice(1)
+      })
+      console.log(arr.join(' '))
     }
   }
 }
