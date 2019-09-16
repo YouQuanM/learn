@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import index from '@/views/index'
 import test from '@/views/test'
+import css from '@/views/csstest'
 
 Vue.use(Router)
 
@@ -16,6 +17,11 @@ export default new Router({
       path: '/test',
       name: 'test',
       component: test
+    },
+    {
+      path: '/css',
+      name: 'css',
+      component: css
     }
   ]
 })

@@ -11,6 +11,9 @@
     <p @click="parseQueryString('http://liangzhicompany.com/home?yh=1&lyl=2&maj=3')">parseQueryString</p>
     <p @click="plindrome('asdffdsa')">plindrome</p>
     <p @click="titleCase('yIn hanG bAI XUE')">titleCase</p>
+    <p @click="findMedianSortedArrays([1,3], [2])">findMedianSortedArrays</p>
+    <p @click="arrFunction([ [1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14] ] ] ], 10])">arrFunction</p>
+    <p @click="dfs(node)">dfs</p>
   </div>
 </template>
 
@@ -19,14 +22,49 @@ export default {
   name: 'index',
   data () {
     return {
-      arr: [0, 1, 2, ['a', 'b', ['i']]],
+      // arr: [0, 1, 2, ['a', 'b', ['i']]],
       reduceArr: [1, 2, 3, 5],
       mapArr: [2, 4, 6],
       num: 1234567890,
       longString: 'safiowernsdldfnljie2109876543',
       a: 12312323423452346,
       b: 123876324,
-      val: 'aabbccfddddwesasdssssasdfaaaaaaaassssssaffdsfaas'
+      val: 'aabbccfddddwesasdssssasdfaaaaaaaassssssaffdsfaas',
+      arr: [],
+      long: [],
+      short: [],
+      nodeArr: [],
+      node: {
+        id: 1,
+        children: [
+          {
+            id: 2,
+            children: [
+              {
+                id: 3,
+                children: []
+              },
+              {
+                id: 4,
+                children: []
+              }
+            ]
+          },
+          {
+            id: 5,
+            children: [
+              {
+                id: 6,
+                children: []
+              },
+              {
+                id: 7,
+                children: []
+              }
+            ]
+          }
+        ]
+      }
     }
   },
   methods: {
@@ -187,6 +225,238 @@ export default {
         arr[i] = v[0].toUpperCase() + v.slice(1)
       })
       console.log(arr.join(' '))
+    },
+    findMedianSortedArrays (nums1, nums2) {
+      console.log(new Date().getMilliseconds())
+      let long
+      let short
+      if (nums1.length > nums2.length) {
+        long = nums1
+        short = nums2
+      } else {
+        long = nums2
+        short = nums1
+      }
+      if (short.length === 0) {
+        this.arr = long
+      } else {
+        this.funArr(long, short)
+      }
+      console.log(this.arr)
+      if (this.arr.length % 2) {
+        console.log(this.arr[(this.arr.length + 1) / 2 - 1])
+        console.log(new Date().getMilliseconds())
+      } else {
+        console.log(((this.arr[(this.arr.length) / 2 - 1]) + (this.arr[(this.arr.length) / 2])) / 2)
+        console.log(new Date().getMilliseconds())
+      }
+    },
+    funArr (long, short) {
+      let longarr = long
+      let shortarr = short
+      if (long.length === 0 || short.length === 0) {
+        this.arr = [...this.arr, ...longarr, ...shortarr]
+      } else {
+        if (longarr[0] > shortarr[0]) {
+          this.arr.push(shortarr.shift())
+        } else {
+          this.arr.push(longarr.shift())
+        }
+        this.funArr(longarr, shortarr)
+      }
+    },
+    // 已知如下数组：
+    // var arr = [ [1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14] ] ] ], 10];
+    // 编写一个程序将数组扁平化去并除其中重复部分数据，最终得到一个升序且不重复的数组
+    arrFunction (arr) {
+      Array.from(new Set(arr.flat(Infinity))).sort((a, b) => { return a - b })
+    },
+    // 深度优先
+    dfs (node) {
+      if (node !== null) {
+        this.nodeArr.push(node.id)
+        if (node.children.length !== 0) {
+          node.children.forEach(v => {
+            this.dfs(v)
+          })
+        }
+      }
+      console.log(this.nodeArr)
+    },
+    // 快速排序
+    quickSort (arr) {
+      if (arr.length <= 1) {
+        return arr
+      }
+      let left = []
+      let right = []
+      let current = arr.splice(0, 1)
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i] < current) {
+          left.push(arr[i])
+        } else {
+          right.push(arr[i])
+        }
+      }
+      return this.quickSort(left).concat(current, this.quickSort(right))
+    },
+    // 冒泡排序
+    bubbleSort (arr) {
+      if (arr.length === 1) {
+        return arr
+      } else {
+        for (let i = arr.length; i >= 2; i--) {
+          for (let j = 0; j < arr.length; j++) {
+            if (arr[j] > arr[j + 1]) {
+              [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+            }
+          }
+        }
+        return arr
+      }
+    },
+    // 选择排序
+    selectSort (arr) {
+      if (arr.length <= 1) {
+        return arr
+      }
+      for (let i = 0; i < arr.length; i++) {
+        for (let j = i; j < arr.length; j++) {
+          if (arr[j] < arr[i]) {
+            [arr[j], arr[i]] = [arr[i], arr[j]]
+          }
+        }
+      }
+    },
+    // 插入排序
+    insertSort (arr) {
+      if (arr.length <= 1) {
+        return arr
+      }
+      for (let i = 1; i < arr.length; i++) {
+        for (let j = i; j > 0; j--) {
+          if (arr[j] < arr[i]) {
+            [arr[i], arr[j]] = [arr[j], arr[i]]
+          } else {
+            break
+          }
+        }
+      }
+      return arr
+    },
+    // 爬楼梯问题
+    climbStairs (n) {
+      if (n <= 2) {
+        return n
+      }
+      return this.climbStairs(n - 1) + this.climbStairs(n - 2)
+    },
+    // 优化爬楼梯
+    climbStairs1 (n, map = new Map()) {
+      if (n <= 2) {
+        return n
+      }
+      if (map.get(n)) {
+        return map.get(n)
+      } else {
+        let value = this.climbStairs1(n - 2, map) + this.climbStairs1(n - 1, map)
+        map.set(n, value)
+        return value
+      }
+    },
+    // 动态规划
+    climbStairs2 (n) {
+      let result = new Array(n + 1)
+      result[1] = 1
+      result[2] = 2
+      for (let i = 3; i < result.length; i++) {
+        result[i] = result[i - 1] + result[i - 2]
+      }
+      return result[n]
+    },
+    // 深拷贝
+    deepClone (obj, hash = new WeakMap()) {
+      if (obj instanceof RegExp) return new RegExp(obj)
+      if (obj instanceof Date) return new Date(obj)
+      if (obj === null || typeof obj !== 'object') {
+        // 如果不是复杂数据类型，直接返回
+        return obj
+      }
+      if (hash.has(obj)) {
+        return hash.get(obj)
+      }
+      // 如果obj是数组，那么obj.constructor 是 [Function: Array]
+      // 如果obj是对象，那么obj.constructor 是 [Function: Object]
+      let t = new obj.constructor()
+      hash.set(obj, t)
+      for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          t[key] = this.deepClone(obj[key], hash)
+        }
+      }
+      return t
+    },
+    // 柯里化函数
+    curring (fn) {
+      let args = Array.prototype.slice.call(arguments, 1)
+      return function () {
+        let newArgs = args.concat(Array.prototype.slice.call(arguments))
+        return fn.apply(fn, newArgs)
+      }
+    },
+    // 利用闭包实现module
+    CoolModule (id) {
+      function test1 () {
+        console.log(id)
+      }
+      return {
+        test1: test1
+      }
+    },
+    // 实现call
+    myCall (obj, ...arg) {
+      let val
+      obj._fn_ = this
+      val = obj._fn_(...arg)
+      delete obj._fn_
+      return val
+    },
+    myApply (obj, arr) {
+      let arg = []
+      arr.forEach(v => {
+        arg.push(arr)
+      })
+      this.myCall(obj, ...arg)
+    },
+    myBind (obj, ...arg1) {
+      return (...arg2) => {
+        return this.myApply(obj, [...arg1, ...arg2])
+      }
+    },
+    // bind实现
+    Function.prototype.myBind = function(obj) {
+      if (obj === null || obj === undefined) {
+        obj = window
+      } else {
+        obj = Object(obj)
+      }
+      let _this = this
+      let argArr = []
+      let arg1 = []
+      for (let i =1; i < arguments.length; i++) {
+        arg1.push(arguments[i])
+        argArr.push('arg1[' + (i-1) + ']')
+      }
+      return function() {
+        let val
+        for (let i = 0; i < arguments.length; i++) {
+          argArr.push('arguments[' + i +']')
+        }
+        obj._fn_ = _this
+        val = eval('obj._fn_(' + argArr + ')')
+        delete obj._fn_
+        return val
+      }
     }
   }
 }
