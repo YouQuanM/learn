@@ -130,21 +130,21 @@ export default {
       console.log(arr.join(','))
     },
     // 给定一个字符串，找出其中无重复字符的最长子字符串
-    findLongestString (val) {
-      let arr = []
-      let longestArr = []
-      let valArr = val.split('')
-      valArr.forEach(v => {
-        if (arr.includes(v)) {
-          arr = []
-        } else {
-          arr.push(v)
-          if (arr.length > longestArr.length) {
-            longestArr = arr
-          }
+    findLongestString (s) {
+        if (s.length === 0) return 0
+        let nums = [s[0]];
+        let res = 1;
+        for (let i = 1; i < s.length; i++) {
+            let index = nums.indexOf(s[i]);
+            if (index < 0) {
+                nums.push(s[i]);
+            } else {
+                res = res > nums.length ? res : nums.length;
+                nums.splice(0, index + 1);
+                nums.push(s[i]);
+            }
         }
-      })
-      console.log(longestArr.join(''))
+        return res > nums.length ? res : nums.length;
     },
     // 实现超出整数存储范围的两个大正整数相加
     mathOverAdd (a, b) {
@@ -282,6 +282,22 @@ export default {
         }
       }
       console.log(this.nodeArr)
+    },
+    // 广度优先
+    bfs (node) {
+      let trees = []
+      let result = []
+      trees.push(node)
+      while (trees.length) {
+        const treeNode = trees.shift()
+        result.push(treeNode.id)
+        if (treeNode.children.length) {
+          treeNode.children.forEach(v => {
+            bfs(v)
+          })
+        }
+      }
+      console.log(result)
     },
     // 快速排序
     quickSort (arr) {
